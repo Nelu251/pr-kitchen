@@ -1,7 +1,7 @@
 package com.example.demo.controllers;
 
 import com.example.demo.domain.dto.OrderRequest;
-
+import com.example.demo.domain.dto.PreparedOrder;
 import com.example.demo.service.OrderService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,5 +27,10 @@ public class KitchenController {
     @GetMapping("/get")
     public ResponseEntity<List<OrderRequest>> show() {
         return ResponseEntity.ok(orderService.show());
+    }
+
+    @GetMapping("/getPrepared")
+    public ResponseEntity<List<PreparedOrder>> showPrepared() {
+        return ResponseEntity.ok(orderService.showPrepared());
     }
 }

@@ -4,14 +4,14 @@ import com.example.demo.domain.dto.OrderRequest;
 import com.example.demo.domain.model.Food;
 import java.util.Collections;
 import java.util.NoSuchElementException;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-@Log4j
+@Slf4j
 public class Orders {
 
     public static final List<OrderRequest> safeList = Collections.synchronizedList(new ArrayList<>());
@@ -62,6 +62,7 @@ public class Orders {
             for (int i = 0; i < orderRequest.getItems().size(); i++) {
                 if (orderRequest.getItems().get(i) == -1) {
                 } else {
+                    log.info("found food with id : {}", orderRequest.getItems().get(i));
                     list.add(orderRequest.getItems().get(i));
                     list.add(orderRequest.getOrder_id());
                     orderRequest.getItems().set(i, -1);
@@ -69,6 +70,8 @@ public class Orders {
                 }
             }
         }
+
+        log.warn("this thread can't find any foods left : {}", Thread.currentThread());
         return null;
     }
 

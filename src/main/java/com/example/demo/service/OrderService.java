@@ -27,12 +27,16 @@ public class OrderService {
         cookService.letsGo();
     }
 
-    public void savePreparedOrder(PreparedOrder preparedOrder) {
+    public synchronized void savePreparedOrder(PreparedOrder preparedOrder) {
         preparedOrders.savePreparedOrder(preparedOrder);
     }
 
     public List<OrderRequest> show() {
         return ordersRequests.getAll();
+    }
+
+    public List<PreparedOrder> showPrepared() {
+        return preparedOrders.getAll();
     }
 
     public PreparedOrder convertFromOrderRequestToPreparedOrder(OrderRequest orderRequest) {

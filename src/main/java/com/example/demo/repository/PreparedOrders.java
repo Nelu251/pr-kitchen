@@ -3,6 +3,7 @@ package com.example.demo.repository;
 import com.example.demo.domain.dto.OrderRequest;
 import com.example.demo.domain.dto.PreparedOrder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Repository;
@@ -11,13 +12,13 @@ import org.springframework.stereotype.Repository;
 @Log4j
 public class PreparedOrders {
 
-    private static final List<PreparedOrder> preparedOrdersList = new ArrayList<>();
+    public static final List<PreparedOrder> preparedOrdersList = Collections.synchronizedList(new ArrayList<>());
 
     public void savePreparedOrder(PreparedOrder preparedOrder) {
         preparedOrdersList.add(preparedOrder);
     }
 
-    public static boolean hasPreparedOrder(int id) {
+    public static synchronized boolean hasPreparedOrder(int id) {
         for (PreparedOrder preparedOrder : preparedOrdersList) {
             if (preparedOrder.getOrderId() == id) {
                 return true;
@@ -35,8 +36,11 @@ public class PreparedOrders {
         if (preparedOrder.getItems().size() == orderRequest.getItems().size() && Orders.isOrderInPending(orderRequest.getOrder_id())) {
             return true;
         }
-
         return false;
+    }
+
+    public List<PreparedOrder> getAll() {
+        return preparedOrdersList;
     }
 
 }

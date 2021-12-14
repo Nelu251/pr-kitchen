@@ -6,12 +6,13 @@ import com.example.demo.repository.Orders;
 import com.example.demo.repository.PreparedOrders;
 import com.example.demo.service.CookService;
 import com.example.demo.service.OrderService;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Semaphore;
 import lombok.Data;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -19,7 +20,7 @@ import org.springframework.stereotype.Component;
 @Data
 @Component
 @Scope("prototype")
-@Log4j
+@Slf4j
 public class Cook implements Runnable {
 
     @Autowired
@@ -37,7 +38,7 @@ public class Cook implements Runnable {
     private String catchPhrase;
 
     public void prepareFood(List<Integer> list) throws InterruptedException {
-        if (!list.isEmpty()) {
+        if (!(list == null)) {
             Food food = Foods.getFoodById(list.get(0));
             if (food.getCookingApparatus() == null) {
                 Thread.sleep(1000);
@@ -51,28 +52,35 @@ public class Cook implements Runnable {
                         break;
                 }
             }
+            synchronized (Cook.class) {
+                if (!PreparedOrders.hasPreparedOrder(list.get(1))) {
+                    log.info("Didn't find a Prepared Order with id : {}", list.get(1));
+                    PreparedOrder preparedOrder = orderService.convertFromOrderRequestToPreparedOrder(Orders.getOrderById(list.get(1)));
 
-            if (!PreparedOrders.hasPreparedOrder(list.get(1))) {
-                PreparedOrder preparedOrder = orderService.convertFromOrderRequestToPreparedOrder(Orders.getOrderById(list.get(1)));
-
-                orderService.savePreparedOrder(preparedOrder);
+                    log.info("converted PreparedOrder : {}", preparedOrder);
+                    orderService.savePreparedOrder(preparedOrder);
+                }
             }
 
             PreparedOrder preparedOrder = PreparedOrders.getPreparedOrderById(list.get(1));
             preparedOrder.getItems().add(list.get(0));
-            preparedOrder.getCookingDetails().add(List.of(list.get(0)));
-            preparedOrder.getCookingDetails().add(List.of(id));
+            List<Integer> details = new ArrayList<>(2);
+            details.add(list.get(0));
+            details.add(id);
+            preparedOrder.getCookingDetails().add(details);
 
             if (PreparedOrders.checkIfOrderIsDone(preparedOrder)) {
+                preparedOrder.setCookingTime((int) (System.currentTimeMillis() / 1000L - preparedOrder.getPickUpTime()));
                 cookService.sendPreparedOrder(preparedOrder);
             }
         }
+        log.warn("This cook didn't get a food to prepare : {}", this.id);
     }
 
     public static void useStove(int time) throws InterruptedException {
-        //        stoves.acquire(1);
+                stoves.acquire(1);
         Thread.sleep(1000);
-        //        stoves.release(1);
+                stoves.release(1);
     }
 
     public static synchronized void useOven(int time) throws InterruptedException {

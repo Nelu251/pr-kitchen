@@ -4,8 +4,7 @@ import com.example.demo.domain.dto.PreparedOrder;
 import com.example.demo.domain.model.Cook;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.ApplicationContext;
@@ -15,9 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @Service
-@Log4j
+@Slf4j
 public class CookService {
-
 
     private final RestTemplate restTemplate;
 
@@ -37,12 +35,12 @@ public class CookService {
     }
 
     public void cooking() {
-        Thread[] threads = new Thread[1];
-        ExecutorService executorService = Executors.newFixedThreadPool(1);
+        Thread[] threads = new Thread[3];
+        ExecutorService executorService = Executors.newFixedThreadPool(3);
         for (int i = 0; i < 3; i++) {
             Cook cook = applicationContext.getBean(Cook.class);
             cook.setId(i);
-            threads[0] = new Thread(cook);
+            threads[i] = new Thread(cook);
             executorService.submit(cook);
         }
 
