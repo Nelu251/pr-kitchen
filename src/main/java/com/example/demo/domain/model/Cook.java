@@ -7,7 +7,6 @@ import com.example.demo.repository.PreparedOrders;
 import com.example.demo.service.CookService;
 import com.example.demo.service.OrderService;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Semaphore;
@@ -29,7 +28,8 @@ public class Cook implements Runnable {
     @Autowired
     CookService cookService;
 
-    static Semaphore stoves = new Semaphore(2);
+    static Semaphore stoves = new Semaphore(4);
+    static Semaphore ovens = new Semaphore(4);
 
     private int id;
     private String name;
@@ -41,7 +41,7 @@ public class Cook implements Runnable {
         if (!(list == null)) {
             Food food = Foods.getFoodById(list.get(0));
             if (food.getCookingApparatus() == null) {
-                Thread.sleep(1000);
+                Thread.sleep(food.getPreparationTime() * 100);
             } else {
                 switch (food.getCookingApparatus()) {
                     case OVEN:
@@ -78,13 +78,15 @@ public class Cook implements Runnable {
     }
 
     public static void useStove(int time) throws InterruptedException {
-                stoves.acquire(1);
-        Thread.sleep(1000);
-                stoves.release(1);
+        stoves.acquire(1);
+        Thread.sleep(time * 200);
+        stoves.release(1);
     }
 
-    public static synchronized void useOven(int time) throws InterruptedException {
-        Thread.sleep(1000);
+    public static void useOven(int time) throws InterruptedException {
+        stoves.acquire(1);
+        Thread.sleep(time * 200);
+        stoves.release(1);
     }
 
     @Override
@@ -94,8 +96,7 @@ public class Cook implements Runnable {
                 prepareFood(Objects.requireNonNull(Orders.findFood()));
             }
         } catch (Exception e) {
-            System.out.println("suiuahiauds");
-            System.out.println(Arrays.toString(e.getStackTrace()));
+            log.error(e.getMessage());
         }
     }
 }

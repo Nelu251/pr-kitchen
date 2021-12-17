@@ -35,11 +35,13 @@ public class CookService {
     }
 
     public void cooking() {
-        Thread[] threads = new Thread[3];
-        ExecutorService executorService = Executors.newFixedThreadPool(3);
-        for (int i = 0; i < 3; i++) {
+        Thread[] threads = new Thread[4];
+        ExecutorService executorService = Executors.newFixedThreadPool(4);
+        for (int i = 0; i < 4; i++) {
             Cook cook = applicationContext.getBean(Cook.class);
             cook.setId(i);
+            cook.setRank(i);
+            cook.setProficiency(i);
             threads[i] = new Thread(cook);
             executorService.submit(cook);
         }
@@ -48,7 +50,7 @@ public class CookService {
             try {
                 thread.join();
             } catch (Exception e) {
-                System.out.println(e);
+                log.error(e.getMessage());
             }
         }
     }

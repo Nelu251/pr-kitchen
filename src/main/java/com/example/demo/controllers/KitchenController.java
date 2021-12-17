@@ -25,7 +25,7 @@ public class KitchenController {
     }
 
     @GetMapping("/get")
-    public ResponseEntity<List<OrderRequest>> show() {
+        public ResponseEntity<List<OrderRequest>> show() {
         return ResponseEntity.ok(orderService.show());
     }
 

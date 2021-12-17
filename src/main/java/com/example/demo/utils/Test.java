@@ -12,37 +12,52 @@ static int a = 0;
     }
 
     public static void main(String[] args) throws InterruptedException {
-        Thread thread1 = new Thread(()-> {
-            try {
-                useMe();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        });
+//        Thread thread1 = new Thread(()-> {
+//            try {
+//                useMe();
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        });
+//
+//        Thread thread2 = new Thread(()-> {
+//            try {
+//                useMe();
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        });
+//
+//        Thread thread3 = new Thread(()-> {
+//            try {
+//                useMe();
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        });
+//
+//        thread1.start();
+//        thread2.start();
+//        thread3.start();
+//
+//        thread1.join();
+//        thread2.join();
+//        thread3.join();
+        List<String> list = new ArrayList<>();
+        list.add("a");
+        list.add("b");
+        list.add("c");
+        list.add("d");
+        list.add("e");
+        list.add("f");
+        list.add("g");
+        list.add("h");
 
-        Thread thread2 = new Thread(()-> {
-            try {
-                useMe();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        });
+        list.remove(3);
 
-        Thread thread3 = new Thread(()-> {
-            try {
-                useMe();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        });
-
-        thread1.start();
-        thread2.start();
-        thread3.start();
-
-        thread1.join();
-        thread2.join();
-        thread3.join();
+        for (int i= 0; i<list.size(); i++){
+            System.out.println(list.get(i));
+        }
 
     }
 
