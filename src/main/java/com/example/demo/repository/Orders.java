@@ -1,9 +1,9 @@
 package com.example.demo.repository;
 
 import com.example.demo.domain.dto.OrderRequest;
-import com.example.demo.domain.model.Food;
+import com.example.demo.domain.model.enums.CookingApparatus;
+import com.example.demo.utils.OrderComparator;
 import java.util.Collections;
-import java.util.NoSuchElementException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
@@ -34,36 +34,118 @@ public class Orders {
         return null;
     }
 
-    public synchronized List<Food> findFoodByComplexity(int rankId, int proficiency) {
-        List<Food> list = new ArrayList<>();
+    //    public static synchronized List<Integer> findFoodByComplexityAndAvailableResource(CookingApparatus cookingApparatus, int rank) {
+    //        List<Integer> list = new ArrayList<>();
+    //        safeList.sort(new OrderComparator());
+    //
+    //        for (OrderRequest orderRequest : safeList) {
+    //            for (int i = 0; i < orderRequest.getItems().size(); i++) {
+    //                int foodId = orderRequest.getItems().get(i);
+    //                if (foodId == -1) {
+    //                } else if ((Foods.getFoodById(foodId).getComplexity() == rank || Foods.getFoodById(foodId).getComplexity() == rank - 1)
+    //                    && Foods.getFoodById(foodId).getCookingApparatus().equals(cookingApparatus)) {
+    //                    log.info("found food with id : {}", foodId);
+    //
+    //                    list.add(foodId);
+    //                    list.add(orderRequest.getOrder_id());
+    //                    orderRequest.getItems().set(i, -1);
+    //                    return list;
+    //                }
+    //            }
+    //        }
+    //        return Collections.emptyList();
+    //    }
+    //
+    //    public static synchronized List<Integer> tryFindFoodByComplexityAndAvailableResource(CookingApparatus cookingApparatus, int rank) {
+    //        List<Integer> list = new ArrayList<>();
+    //        safeList.sort(new OrderComparator());
+    //
+    //        for (OrderRequest orderRequest : safeList) {
+    //            for (int i = 0; i < orderRequest.getItems().size(); i++) {
+    //                int foodId = orderRequest.getItems().get(i);
+    //                if (foodId == -1) {
+    //                } else if ((Foods.getFoodById(foodId).getComplexity() == rank || Foods.getFoodById(foodId).getComplexity() == rank - 1)
+    //                    && Foods.getFoodById(foodId).getCookingApparatus().equals(cookingApparatus)) {
+    //                    log.info("found food with id : {}", foodId);
+    //
+    //                    list.add(foodId);
+    //                    list.add(orderRequest.getOrder_id());
+    //                    list.add(i);
+    //
+    //                    return list;
+    //                }
+    //            }
+    //        }
+    //        return Collections.emptyList();
+    //    }
+    //
+    //    public static synchronized List<Integer> findFoodWithNullAparatus(int rank) {
+    //        List<Integer> list = new ArrayList<>();
+    //        safeList.sort(new OrderComparator());
+    //
+    //        for (OrderRequest orderRequest : safeList) {
+    //            for (int i = 0; i < orderRequest.getItems().size(); i++) {
+    //                int foodId = orderRequest.getItems().get(i);
+    //                if (foodId == -1) {
+    //                } else if ((Foods.getFoodById(foodId).getComplexity() == rank || Foods.getFoodById(foodId).getComplexity() == rank - 1) && Foods.getFoodById(foodId).getCookingApparatus() == null) {
+    //                    log.info("found food with id : {}", foodId);
+    //
+    //                    list.add(foodId);
+    //                    list.add(orderRequest.getOrder_id());
+    //                    orderRequest.getItems().set(i, -1);
+    //                    return list;
+    //                }
+    //            }
+    //        }
+    //        return Collections.emptyList();
+    //    }
+    //
+    //    public static synchronized List<Integer> tryFindFoodWithNullAparatus(int rank) {
+    //        List<Integer> list = new ArrayList<>();
+    //        safeList.sort(new OrderComparator());
+    //
+    //        for (OrderRequest orderRequest : safeList) {
+    //            for (int i = 0; i < orderRequest.getItems().size(); i++) {
+    //                int foodId = orderRequest.getItems().get(i);
+    //                if (foodId == -1) {
+    //                } else if ((Foods.getFoodById(foodId).getComplexity() == rank || Foods.getFoodById(foodId).getComplexity() == rank - 1) && Foods.getFoodById(foodId).getCookingApparatus() == null) {
+    //                    log.info("found food with id : {}", foodId);
+    //
+    //                    list.add(foodId);
+    //                    list.add(orderRequest.getOrder_id());
+    //                    list.add(i);
+    //                    return list;
+    //                }
+    //            }
+    //        }
+    //        return Collections.emptyList();
+    //    }
 
-        for (OrderRequest order : safeList) {
-            for (int j = 0; j < order.getItems().size(); j++) {
-                if (order.getPriority() == rankId || order.getPriority() == rankId - 1) {
-                    list.add(Foods.getFoodById(j));
-                    order.getItems().remove(j);
-                    order.getItems().add(-1);
-                } else {
-                    break;
-                }
-            }
-            if (list.size() == proficiency) {
-                break;
-            }
-        }
-
-        return list;
-    }
-
-    public static synchronized List<Integer> findFood() throws NoSuchElementException {
+    public static synchronized List<Integer> findFoodByPriorityAndComplexity(int rank) {
         List<Integer> list = new ArrayList<>();
+        safeList.sort(new OrderComparator());
 
         for (OrderRequest orderRequest : safeList) {
             for (int i = 0; i < orderRequest.getItems().size(); i++) {
-                if (orderRequest.getItems().get(i) == -1) {
-                } else {
-                    log.info("found food with id : {}", orderRequest.getItems().get(i));
-                    list.add(orderRequest.getItems().get(i));
+                int foodId = orderRequest.getItems().get(i);
+                if (foodId != -1 && Foods.getFoodById(foodId).getComplexity() == rank) {
+                    log.info("found food with id : {}", foodId);
+
+                    list.add(foodId);
+                    list.add(orderRequest.getOrder_id());
+                    orderRequest.getItems().set(i, -1);
+                    return list;
+                }
+            }
+        }
+        for (OrderRequest orderRequest : safeList) {
+            for (int i = 0; i < orderRequest.getItems().size(); i++) {
+                int foodId = orderRequest.getItems().get(i);
+                if (foodId == -1) {
+                } else if (Foods.getFoodById(foodId).getComplexity() == rank - 1) {
+                    log.info("found food with id : {}", foodId);
+
+                    list.add(foodId);
                     list.add(orderRequest.getOrder_id());
                     orderRequest.getItems().set(i, -1);
                     return list;
@@ -75,20 +157,40 @@ public class Orders {
         return null;
     }
 
-    public static synchronized boolean noMoreFoods() {
-        boolean flag = false;
+    //    public static synchronized List<Integer> findFood() throws NoSuchElementException {
+    //        List<Integer> list = new ArrayList<>();
+    //
+    //        for (OrderRequest orderRequest : safeList) {
+    //            for (int i = 0; i < orderRequest.getItems().size(); i++) {
+    //                if (orderRequest.getItems().get(i) == -1) {
+    //                } else {
+    //                    log.info("found food with id : {}", orderRequest.getItems().get(i));
+    //                    list.add(orderRequest.getItems().get(i));
+    //                    list.add(orderRequest.getOrder_id());
+    //                    orderRequest.getItems().set(i, -1);
+    //                    return list;
+    //                }
+    //            }
+    //        }
+    //
+    //        log.warn("this thread can't find any foods left : {}", Thread.currentThread());
+    //        return null;
+    //    }
 
-        for (OrderRequest orderRequest : safeList) {
-            for (Integer item : orderRequest.getItems()) {
-                if (item == -1) {
-                    flag = true;
-                } else {
-                    flag = false;
-                }
-            }
-        }
-        return flag;
-    }
+    //    public static synchronized boolean noMoreFoods() {
+    //        boolean flag = false;
+    //
+    //        for (OrderRequest orderRequest : safeList) {
+    //            for (Integer item : orderRequest.getItems()) {
+    //                if (item == -1) {
+    //                    flag = true;
+    //                } else {
+    //                    flag = false;
+    //                }
+    //            }
+    //        }
+    //        return flag;
+    //    }
 
     public static boolean isOrderInPending(int orderId) {
         boolean flag = false;
@@ -100,5 +202,16 @@ public class Orders {
         }
 
         return flag;
+    }
+
+    public static synchronized boolean noMoreFoods() {
+        for (OrderRequest orderRequest : safeList) {
+            for (Integer item : orderRequest.getItems()) {
+                if (item != -1) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

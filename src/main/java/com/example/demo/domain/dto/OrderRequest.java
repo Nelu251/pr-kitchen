@@ -14,5 +14,5 @@ public class OrderRequest {
     private List<Integer> items;
     private int priority;
     private int max_wait;
-    private long pick_up_time;
+    private int pick_up_time;
 }

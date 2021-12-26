@@ -9,10 +9,10 @@ import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
 @Service
 @Log4j
 public class OrderService {
+
     @Autowired
     CookService cookService;
 
@@ -22,9 +22,11 @@ public class OrderService {
     @Autowired
     private PreparedOrders preparedOrders;
 
-    public void saveOrders(OrderRequest orderRequest){
+    public void saveOrders(OrderRequest orderRequest) {
         ordersRequests.saveOrder(orderRequest);
-        cookService.letsGo();
+        if (!cookService.flag) {
+            cookService.letsGo();
+        }
     }
 
     public synchronized void savePreparedOrder(PreparedOrder preparedOrder) {
@@ -46,10 +48,8 @@ public class OrderService {
             .priority(orderRequest.getPriority())
             .tableId(orderRequest.getTable_id())
             .waiterId(orderRequest.getWaiter_id())
-            .pickUpTime((int)orderRequest.getPick_up_time())
+            .pickUpTime((int) orderRequest.getPick_up_time())
             .build();
     }
-
-
 
 }

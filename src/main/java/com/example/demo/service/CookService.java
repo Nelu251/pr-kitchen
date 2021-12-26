@@ -19,6 +19,8 @@ public class CookService {
 
     private final RestTemplate restTemplate;
 
+    boolean flag = false;
+
     @Autowired
     ApplicationContext applicationContext;
 
@@ -35,27 +37,49 @@ public class CookService {
     }
 
     public void cooking() {
-        Thread[] threads = new Thread[4];
-        ExecutorService executorService = Executors.newFixedThreadPool(4);
-        for (int i = 0; i < 4; i++) {
-            Cook cook = applicationContext.getBean(Cook.class);
-            cook.setId(i);
-            cook.setRank(i);
-            cook.setProficiency(i);
-            threads[i] = new Thread(cook);
-            executorService.submit(cook);
-        }
 
-        for (Thread thread : threads) {
-            try {
-                thread.join();
-            } catch (Exception e) {
-                log.error(e.getMessage());
-            }
+        ExecutorService executorService = Executors.newFixedThreadPool(4);
+
+        Cook cook1 = applicationContext.getBean(Cook.class);
+        cook1.setId(1);
+        cook1.setRank(1);
+        cook1.setProficiency(1);
+        Thread thread1 = new Thread(cook1);
+        executorService.submit(cook1);
+
+        Cook cook2 = applicationContext.getBean(Cook.class);
+        cook2.setId(2);
+        cook2.setRank(2);
+        cook2.setProficiency(2);
+        Thread thread2 = new Thread(cook2);
+        executorService.submit(cook2);
+
+        Cook cook3 = applicationContext.getBean(Cook.class);
+        cook3.setId(3);
+        cook3.setRank(3);
+        cook3.setProficiency(3);
+        Thread thread3 = new Thread(cook3);
+        executorService.submit(cook3);
+
+        Cook cook4 = applicationContext.getBean(Cook.class);
+        cook4.setId(4);
+        cook4.setRank(3);
+        cook4.setProficiency(4);
+        Thread thread4 = new Thread(cook4);
+        executorService.submit(cook4);
+
+        try {
+            thread1.join();
+            thread2.join();
+            thread3.join();
+            thread4.join();
+        } catch (Exception e) {
+            log.error(e.getMessage());
         }
     }
 
     void letsGo() {
+        flag = true;
         cookService.cooking();
     }
 

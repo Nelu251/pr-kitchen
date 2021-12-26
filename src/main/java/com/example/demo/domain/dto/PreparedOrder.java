@@ -20,6 +20,6 @@ public class PreparedOrder {
     private long pickUpTime;
     private int cookingTime;
     @Builder.Default
-    private List<List<Integer>> cookingDetails = new ArrayList<>();
+    private List<Details> cookingDetails = new ArrayList<>();
 
 }

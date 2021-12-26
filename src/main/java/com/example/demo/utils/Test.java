@@ -1,7 +1,10 @@
 package com.example.demo.utils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.concurrent.Semaphore;
 
 public class Test {
@@ -11,7 +14,7 @@ static int a = 0;
         thread.notify();
     }
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
 //        Thread thread1 = new Thread(()-> {
 //            try {
 //                useMe();
@@ -43,21 +46,41 @@ static int a = 0;
 //        thread1.join();
 //        thread2.join();
 //        thread3.join();
-        List<String> list = new ArrayList<>();
-        list.add("a");
-        list.add("b");
-        list.add("c");
-        list.add("d");
-        list.add("e");
-        list.add("f");
-        list.add("g");
-        list.add("h");
+//
+//        List<ObjectHz> list = new ArrayList<>();
+//
+//        list.add(new ObjectHz(1,10));
+//        list.add(new ObjectHz(2,10));
+//        list.add(new ObjectHz(3,11));
+//        list.add(new ObjectHz(3,10));
+//        list.add(new ObjectHz(2,9));
+//        list.add(new ObjectHz(2,8));
+//        list.add(new ObjectHz(1,11));
+//        list.add(new ObjectHz(2,12));
+//        list.add(new ObjectHz(1,10));
+//        list.add(new ObjectHz(3,14));
+//        list.add(new ObjectHz(2,9));
+//        list.add(new ObjectHz(3,6));
+//
+//        list.sort(new TestComp());
+//
+//        list.forEach(System.out::println);
+//
+//        @Override
+////        public Date deserialize(JsonElement element, Type arg1, JsonDeserializationContext arg2) throws JsonParseException {
+//            String date = "2021-12-22T08:55:07.92+02:00";
+//
+//            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+//            format.setTimeZone(TimeZone.getTimeZone("UTC"));
+//            java.util.Date temp;
+//            try {
+//                temp = format.parse(date);
+//                System.out.println(temp);
+//            } catch (ParseException exp) {
+//                System.err.println(exp.getMessage());
+//            }
+        System.out.println(System.currentTimeMillis());
 
-        list.remove(3);
-
-        for (int i= 0; i<list.size(); i++){
-            System.out.println(list.get(i));
-        }
 
     }
 

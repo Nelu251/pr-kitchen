@@ -39,6 +39,15 @@ public class PreparedOrders {
         return false;
     }
 
+    public static void removePreparedOrder(int id) {
+        for (int i = 0; i< preparedOrdersList.size(); i++) {
+            if (preparedOrdersList.get(i).getOrderId() == id){
+                preparedOrdersList.remove(i);
+                break;
+            }
+        }
+    }
+
     public List<PreparedOrder> getAll() {
         return preparedOrdersList;
     }
